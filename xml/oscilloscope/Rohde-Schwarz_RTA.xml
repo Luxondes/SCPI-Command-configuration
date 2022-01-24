@@ -1,0 +1,52 @@
+<Cmd-SCPI>
+  <File_ver>1.0</File_ver>
+  <Date>18/06/2021</Date>
+  <Copyright>LUXONDES</Copyright>
+  <Mode>Oscilloscope</Mode>
+
+  <DeviceNames>
+    <!-- the first and second here work, but the second will be the priority  -->
+    <Device id="Rohde&amp;Schwarz,RTA4004,1335.7700k04/102733,01.600">R&amp;S RTA 4004</Device>
+    <Device id="Rohde&amp;Schwarz,RTAx">R&amp;S RTAx</Device>
+
+  </DeviceNames>
+
+  <!-- The initialization of the app sended to the analyzer, ignore response -->
+  <Init>
+    <Line>FORM REAL</Line>
+    <Line>ACQ:POIN 5000</Line>
+    <Line>FORM:BORD LSBF</Line>
+  </Init>
+  <!--  BIG or LITTLE, look at the system of your analyser for know if your system has a byte order little endian or big endian. Put only for real,float or double-->
+  <Endian>LITTLE</Endian>
+  <!-- At the start of the received data, we have a header ex: 41006, where 4 is the number of byte of the header and 1006 the size of the data-->
+  <Header>IEEE 754</Header>
+
+  <GetPoints>
+    <Get>
+      <Send>CHAN:DATA?</Send><Response>real:32</Response>
+      <!--  The response need to be binary array of the number of points multipled per the type (16,32,64 bits). Except if this is a ascii format.
+            uint:16 or short
+            int:32 or int
+            int:64 or long
+            real:32 or float
+            real:64 or double
+            ascii:,    (put after the &, what separated each ascii, if just ascii, per default, separated per commas
+            -->
+    </Get>
+  </GetPoints>
+  <!-- -->
+  <GetHeader>
+    <Time-Unit>s</Time-Unit>
+    <Get>
+      <Send>chan:data:head?</Send><Response>Value</Response>
+    </Get>
+  </GetHeader>
+
+  <AmplitudeUnit>
+    <Get>
+      <Send>prob:set:att:unit?</Send><Response>Value</Response> <!-- ex: V or A -->
+    </Get>
+  </AmplitudeUnit>
+
+</Cmd-SCPI>

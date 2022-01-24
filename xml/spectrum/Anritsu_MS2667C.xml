@@ -1,0 +1,113 @@
+<Cmd-SCPI>
+  <File_ver>1.0</File_ver>
+  <Date>25/09/2020</Date>
+  <Copyright>LUXONDES</Copyright>
+  <Marque>Anritsu</Marque>
+  <Mode>Spectrum</Mode>
+
+  <DeviceNames>
+    <Device id="Anritsu,MS266x">Anritsu MS266xxx</Device>
+    <Device id="Anritsu,MS2667C,0000,0">Anritsu MS2667C</Device>
+  </DeviceNames>
+
+  <!-- The initialization of the app sended to the analyzer, ignore response -->
+  <Init>
+    <Line>bin 1</Line>
+  </Init>
+  <!-- Can be like that
+  <Init>bin 1;AUNITS DBM</Init>
+   -->
+  <Endian>LITTLE</Endian>
+
+  <!-- If the command do not exist on the analyzer, left it without any getter/setter and put a default value -->
+  <NumberOfPoints>501
+  </NumberOfPoints>
+<!--  501-->
+  <GetPoints>
+
+    <Get>
+<!--      <Send>XMA? 0,NBPOINTS</Send><Response>uint:16</Response>-->
+      <Send>XMA? 0,100;XMA? 100,100;XMA? 200,100;XMA? 300,100;XMA? 400,101</Send><Response>uint:16</Response>
+
+<!--  The response need to be binary array of the number of points multipled per the type (16,32,64 bits). Except if this is a ascii format.
+      uint:16
+      int:32
+      int:64 or long:64
+      real:32 or float:32
+      real:64 or double:64
+      ascii:,    (put after the &, what separated each ascii, if just ascii, per default, separated per commas
+      -->
+
+    </Get>
+  </GetPoints>
+
+
+  <!-- -->
+  <Start>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>FA?</Send>
+      <!-- Value received on Hz -->
+      <Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>FA ValueUnit</Send><Response/>
+    </Set>
+  </Start>
+  <Stop>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>FB?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>FB ValueUnit</Send><Response/>
+    </Set>
+  </Stop>
+  <Center>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>CF?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>CF ValueUnit</Send><Response/>
+    </Set>
+  </Center>
+  <Span>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>SP?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>SP ValueUnit</Send><Response/>
+    </Set>
+  </Span>
+
+  <!-- If no Setter and the app require it, it will print the needed umplemented command on the terminal-->
+  <Rbw>
+    <Get>
+      <Send>RB?</Send><Response>Value</Response> <!-- ex: 10000. Which will be read like 10 KHz -->
+    </Get>
+  </Rbw>
+  <Vbw>
+    <Get>
+      <Send>VB?</Send><Response>Value</Response> <!-- ex: off -->
+    </Get>
+  </Vbw>
+
+  <Attenuator>
+    <Get>
+      <Send>AT?</Send><Response>Value</Response> <!-- ex: 10 -->
+    </Get>
+  </Attenuator>
+  <SweepTime>
+    <Time-Unit>us</Time-Unit>
+    <Get>
+      <Send>ST?</Send><Response>Value</Response>
+    </Get>
+  </SweepTime>
+  <AmplitudeUnit>
+    <Get>
+      <Send>AUNITS?</Send><Response>Value</Response> <!-- ex: DBM, DBUV -->
+    </Get>
+  </AmplitudeUnit>
+</Cmd-SCPI>

@@ -1,0 +1,87 @@
+<Cmd-SCPI>
+  <File_ver>1.0</File_ver>
+  <Date>09/03/2021</Date>
+  <Copyright>LUXONDES</Copyright>
+  <Marque>R&amp;S</Marque>
+  <Mode>Spectrum</Mode>
+
+  <DeviceNames>
+    <Device id="RSA507A_B021049">RSA507A_B021049</Device>
+    <Device id="RSA507Ax">RSA507A</Device>
+    <Device id="RSAx">RSAx</Device>
+  </DeviceNames>
+
+  <!-- At the start of the received data, we have a header ex: 41006, where 4 is the number of byte of the header and 1006 the size of the data-->
+  <!-- If the header is true, you can  remove the number of points command-->
+  <Header>IEEE 754</Header>
+
+  <!--  BIG or LITTLE, look at the system of your analyser for know if your system has a byte order little endian or big endian. Put only for real,float or double-->
+  <Endian>LITTLE</Endian>
+
+  <GetPoints>
+    <Get>
+      <Send>TRACE?</Send><Response>real:32</Response>
+      <!--  The response need to be binary array of the number of points multipled per the type (16,32,64 bits). Except if this is a ascii format.
+            uint:16 or short
+            int:32 or int
+            int:64 or long
+            real:32 or float
+            real:64 or double
+            ascii:,    (put after the &, what separated each ascii, if just ascii, per default, separated per commas
+            -->
+    </Get>
+  </GetPoints>
+  <!-- -->
+  <Start>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>START?</Send><Response>Value</Response>
+    </Get>
+  </Start>
+  <Stop>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>STOP?</Send><Response>Value</Response>
+    </Get>
+  </Stop>
+  <Center>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>CENTER?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>CENTER Value</Send><Response/>
+    </Set>
+  </Center>
+  <Span>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>SPAN?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>SPAN Value</Send><Response/>
+    </Set>
+  </Span>
+
+  <!-- If no Setter and the app require it, it will print the needed umplemented command on the terminal-->
+  <Rbw>
+    <Get>
+      <Send>RBW?</Send><Response>Value</Response> <!-- ex: 10000. Which will be read like 10 KHz -->
+    </Get>
+  </Rbw>
+  <Vbw>
+    <Get>
+      <Send>VBW?</Send><Response>Value</Response> <!-- ex: off -->
+    </Get>
+  </Vbw>
+  <Attenuator>
+    <Get>
+      <Send>ATT?</Send><Response>Value</Response> <!-- ex: 10 -->
+    </Get>
+  </Attenuator>
+  <AmplitudeUnit>
+    <Get>
+      <Send>UNIT?</Send><Response>Value</Response> <!-- ex: DBM, DBUV -->
+    </Get>
+  </AmplitudeUnit>
+</Cmd-SCPI>

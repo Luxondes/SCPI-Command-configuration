@@ -1,0 +1,6 @@
+archive.zip
+dist.zip
+dist/software.exe
+__pycache__
+build
+tmp

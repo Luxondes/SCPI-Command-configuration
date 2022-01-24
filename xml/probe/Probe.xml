@@ -1,0 +1,20 @@
+<Cmd-SCPI>
+  <File_ver>1.0</File_ver>
+  <Date>24/02/2021</Date>
+  <Copyright>LUXONDES</Copyright>
+  <Mode>Probe</Mode>
+  <DeviceNames>
+    <!-- the first and second here work, but the second will be the priority  -->
+  <Device id="Probex">Probe xxx</Device>
+  </DeviceNames>
+  <GetPoints>
+    <Get>
+      <Send>:TRAC? TRACE1</Send><Response/>
+    </Get>
+  </GetPoints>
+  <AmplitudeUnit>
+    <Get>
+      <Send>:UNIT:POWER?</Send><Response>Value</Response> <!-- ex: DBM, DBUV -->
+    </Get>
+  </AmplitudeUnit>
+</Cmd-SCPI>

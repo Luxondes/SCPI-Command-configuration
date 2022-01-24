@@ -1,0 +1,111 @@
+<Cmd-SCPI>
+  <File_ver>1.0</File_ver>
+  <Date>16/02/2021</Date>
+  <Copyright>LUXONDES</Copyright>
+  <Marque>R&amp;S</Marque>
+  <Mode>Spectrum</Mode>
+
+  <DeviceNames>
+    <!-- the first and second here work, but the second will be the priority  -->
+  <Device id="ROHDE&amp;SCHWARZ_FPC1x">ROHDE &amp; SCHWARZ FPC 1xxx</Device>
+  <Device id="ROHDE&amp;SCHWARZ_FPC1500x">ROHDE &amp; SCHWARZ FPC 1500</Device>
+    <Device id="Rohde&amp;Schwarz,FSV-x">R&amp;S FSV-x</Device>
+    <Device id="Rohde&amp;Schwarz,FSV-30,1307.9002K30/101552,2.21">R&amp;S FSV-30</Device>
+    <Device id="Luxondes Simu,numero,version">Luxondes Simulation PC</Device>
+
+    <Device id="Rohde&amp;Schwarz,FPHx">R&amp;S FPH</Device>
+    <Device id="Rohde&amp;Schwarz,FSWx">R&amp;S FSW</Device>
+
+  </DeviceNames>
+
+  <!-- The initialization of the app sended to the analyzer, ignore response -->
+  <Init>
+
+    <Line>FORM REAL,32</Line>
+  </Init>
+  <!--  BIG or LITTLE, look at the system of your analyser for know if your system has a byte order little endian or big endian. Put only for real,float or double-->
+  <Endian>LITTLE</Endian>
+  <!-- At the start of the received data, we have a header ex: 41006, where 4 is the number of byte of the header and 1006 the size of the data-->
+  <!-- If the header is true, you can  remove the number of points command-->
+  <Header>IEEE 754</Header>
+
+  <GetPoints>
+    <Get>
+      <Send>:TRAC? TRACE1</Send><Response>real:32</Response>
+      <!--  The response need to be binary array of the number of points multipled per the type (16,32,64 bits). Except if this is a ascii format.
+            uint:16 or short
+            int:32 or int
+            int:64 or long
+            real:32 or float
+            real:64 or double
+            ascii:,    (put after the &, what separated each ascii, if just ascii, per default, separated per commas
+            -->
+    </Get>
+  </GetPoints>
+  <!-- -->
+  <Start>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>:FREQ:STAR?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>:FREQ:STAR Value Unit</Send><Response/>
+    </Set>
+  </Start>
+  <Stop>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>:FREQ:STOP?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>:FREQ:STOP Value Unit</Send><Response/>
+    </Set>
+  </Stop>
+  <Center>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>:FREQ:CENTER?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>:FREQ:CENTER Value Unit</Send><Response/>
+    </Set>
+  </Center>
+  <Span>
+    <Freq-Unit>Hertz</Freq-Unit>
+    <Get>
+      <Send>:FREQ:SPAN?</Send><Response>Value</Response>
+    </Get>
+    <Set>
+      <Send>:FREQ:SPAN Value Unit</Send><Response/>
+    </Set>
+  </Span>
+
+  <!-- If no Setter and the app require it, it will print the needed umplemented command on the terminal-->
+  <Rbw>
+    <Get>
+      <Send>BAND?</Send><Response>Value</Response> <!-- ex: 10000. Which will be read like 10 KHz -->
+    </Get>
+  </Rbw>
+  <Vbw>
+    <Get>
+      <Send>BAND:VID?</Send><Response>Value</Response> <!-- ex: off -->
+    </Get>
+  </Vbw>
+
+  <Attenuator>
+    <Get>
+      <Send>INP:ATT?</Send><Response>Value</Response> <!-- ex: 10 -->
+    </Get>
+  </Attenuator>
+  <SweepTime>
+    <Time-Unit>s</Time-Unit>
+    <Get>
+      <Send>:SWE:TIME?</Send><Response>Value</Response> <!-- ex: 5ms -->
+    </Get>
+  </SweepTime>
+  <AmplitudeUnit>
+    <Get>
+      <Send>:UNIT:POWER?</Send><Response>Value</Response> <!-- ex: DBM, DBUV -->
+    </Get>
+  </AmplitudeUnit>
+</Cmd-SCPI>
