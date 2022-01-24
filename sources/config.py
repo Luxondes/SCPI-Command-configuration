@@ -36,16 +36,12 @@ class Tag(tk.Frame,utils.ListenerInterface):
         self.checkbutton=None
         self.config=config
         self.display()
-        
-
+    
         self.test=False
-##        self.setResponse=None
-
         self.getterOnly=getterOnly
         self.unitFlag=unit
 
         frame2=createSubFrame(self)
-        
         
         title=createTitleLabel(frame2,tk.LEFT,title)
         if(hinttext!=None):
@@ -79,9 +75,9 @@ class Tag(tk.Frame,utils.ListenerInterface):
         frame2=createSubFrame(self.gettersetterFrame)
         self.config.addHintWidget(4,createLabel(frame2,tk.LEFT,"Get Send :"))
         self.getSend=createEntry(frame2,tk.LEFT)
-        self.config.addHintWidget(5, createLabel(frame2,tk.LEFT,"Response :"))
-        self.getResponse=createEntry(frame2,tk.LEFT)
-        self.getResponse.set("Value")
+##        self.config.addHintWidget(5, createLabel(frame2,tk.LEFT,"Response :"))
+##        self.getResponse=createEntry(frame2,tk.LEFT)
+##        self.getResponse.set("Value")
         if not getterOnly:
             frame2=createSubFrame(self.gettersetterFrame)
             self.config.addHintWidget(3,createLabel(frame2,tk.LEFT,"Set Send :"))
@@ -100,47 +96,43 @@ class Tag(tk.Frame,utils.ListenerInterface):
             self.test=True
             self.config.master.callMessages(self.getSend.get())
             self.getSend.configure(bg="yellow")
-            self.getResponse.configure(bg="yellow")
+##            self.getResponse.configure(bg="yellow")
 
     def callAnswer(self, barray):
         if(self.test):
             textAnswer=utils.convertBytesToString(barray)
-##                print(textAnswer)
             if(self.tagname=="Start" or
                self.tagname=="Stop" or
                self.tagname=="Center" or
                self.tagname=="Span" or
                self.tagname=="Rbw" or
                self.tagname=="Vbw" or
-               self.tagname=="RefLevel" or
-               self.tagname=="Db-Division" or
-               self.tagname=="Step" or
                self.tagname=="Attenuator" or
                self.tagname=="SweepTime"
                ):
                 try:
                     float(textAnswer.strip())
                     self.getSend.configure(bg="green")
-                    self.getResponse.configure(bg="green")
+##                    self.getResponse.configure(bg="green")
                 except ValueError:
                     print('Got '+textAnswer+' but needed a number')
                     self.getSend.configure(bg="red")
-                    self.getResponse.configure(bg="red")
+##                    self.getResponse.configure(bg="red")
             if(self.tagname=="AmplitudeUnit"):
                 if(textAnswer.lower().trim() in ["dbm","dbuv","dbmv","v","w","dbua","dbµv","dbµa"]):
                     self.getSend.configure(bg="green")
-                    self.getResponse.configure(bg="green")
+##                    self.getResponse.configure(bg="green")
                 else:
                     print('Got '+textAnswer.lower()+' but required dbm, dbuv, dbmv, v, w, dbua, dbµv or dbµa')
                     self.getSend.configure(bg="red")
-                    self.getResponse.configure(bg="red")                        
+##                    self.getResponse.configure(bg="red")                        
             elif(' ' not in textAnswer.strip()):
                 self.getSend.configure(bg="green")
-                self.getResponse.configure(bg="green")
+##                self.getResponse.configure(bg="green")
             else:
                 print('Got '+textAnswer+' but needed something')
                 self.getSend.configure(bg="red")
-                self.getResponse.configure(bg="red")
+##                self.getResponse.configure(bg="red")
             self.test=False
     def onClickCheckBox(self):
         if(self.checkbutton[1].get()):
@@ -153,12 +145,12 @@ class Tag(tk.Frame,utils.ListenerInterface):
     def setValues(self,xmlroot):
         tags=xmlroot.findall(self.tagname)
         if(len(tags)==0):
-            self.default.set("None")
-            self.checkbutton[0].select()
-            self.onClickCheckBox()
+            if(self.default!=None):
+                self.default.set("None")
+                self.checkbutton[0].select()
+                self.onClickCheckBox()
             return
         for tag in tags:
-##            print(str(tag.tag)+";"+str(len(tag)))
             if(len(tag)==0):
                 self.default.set(str(tag.text))
                 self.checkbutton[0].select()
@@ -171,14 +163,12 @@ class Tag(tk.Frame,utils.ListenerInterface):
                     for subsubelem in subelem:
                         if(subsubelem.tag.lower() == "send"):
                             self.getSend.set(subsubelem.text)  
-                        if(subsubelem.tag.lower() == "response"):
-                            self.getResponse.set(subsubelem.text)                  
+##                        if(subsubelem.tag.lower() == "response"):
+##                            self.getResponse.set(subsubelem.text)                  
                 if(not self.getterOnly and subelem.tag.lower() == "set"):
                     for subsubelem in subelem:
                         if(subsubelem.tag.lower() == "send"):
                             self.setSend.set(subsubelem.text)  
-##                        if(subsubelem.tag.lower() == "response"):
-##                            self.setResponse.set(subsubelem.text)  
         pass
     def saveValues(self,tree):
         if not self.visible:
@@ -205,9 +195,9 @@ class Tag(tk.Frame,utils.ListenerInterface):
             child2.text=self.getSend.get()
             child2=ET.SubElement(child1,"Response")
             
-            child2.text=self.getResponse.get()
-            if(utils.textEmpty(child2.text)):
-                child2.text="Value"
+            child2.text="Value"#self.getResponse.get()
+##            if(utils.textEmpty(child2.text)):
+##                child2.text="Value"
         if(self.setSend!=None and not utils.textEmpty(self.setSend.get())):
             child1=ET.SubElement(child,"Set")
             child2=ET.SubElement(child1,"Send")
@@ -246,7 +236,6 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
         self.getSend=createEntry(frame2,tk.LEFT)
         createLabel(frame2,tk.LEFT,"Response :")
         
-        self.getResponse=None
 
         self.listResponseLong=("Integer 16 bytes","Integer 32 bytes","Integer 64 bytes","real 32 bytes","real 64 bytes","Ascii/String")
         self.listResponseShort=("UINT:16","INT:32","INT:64","REAL:32","REAL:64","ASCII")
@@ -948,12 +937,6 @@ class Config(tk.Frame,utils.ListenerInterface):
         self.addToListSpectrum(Tag(self,title="Rbw",tagname="Rbw",unit=2,getterOnly=True,hint=1))
         self.addToListSpectrum(Tag(self,title="Vbw",tagname="Vbw",unit=2,getterOnly=True,hint=1))
         
-##        self.addToList(Tag(self,title="Ref Level",tagname="RefLevel",unit=2,getterOnly=False,hint=1))
-##        self.addToList(Tag(self,title="Db Division",tagname="Db-Division",unit=2,getterOnly=False,hint=1
-##                           ,hinttext="The answer can be multiplied or divided per 'step', read your device manual."))
-##        self.addToList(Tag(self,title="Step",tagname="Step",unit=2,getterOnly=True,hint=1
-##                           ,hinttext="Tag for know the number of tile of the screen device (often ten)"))
-        
         self.addToListSpectrum(Tag(self,title="Attenuator",tagname="Attenuator",unit=2,getterOnly=True,hint=1))
                            
         self.addToListSpectrum(Tag(self,title="Sweep Time",tagname="SweepTime",unit=1,getterOnly=True,hint=1))
@@ -1011,7 +994,7 @@ class Config(tk.Frame,utils.ListenerInterface):
         self.hint2=Hint("(2): Required for Scanphone",None,self)
         self.hint3=Hint("Setter ex: :FREQ:CENTER 1000 Mhz -> :FREQ:CENTER Value Unit, if no unit, the 1000 will be converted to Hz before",None,self)
         self.hint4=Hint("Getter: Require always a '?', always wait a answer. The answer need to be only a integer,float or a unit",None,self)
-        self.hint5=Hint("Response can be 'Value','Value*Step' or 'Value/Step'",None,self)
+        self.hint5=Hint("Response is 'Value'",None,self)
 
 ##        
         self.labelHint.pack(side=tk.BOTTOM,padx=0,fill=tk.X,pady=0,expand=True)        
