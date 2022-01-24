@@ -12,9 +12,6 @@ import config
 import plot
 import probe
 
-
-##from tkinter import messagebox
-
 class Console(tk.Frame,ListenerInterface):
     def  __init__(self,master):
         tk.Frame.__init__(self,master,bg=white)
@@ -34,8 +31,8 @@ class Console(tk.Frame,ListenerInterface):
         self.text.configure(yscrollcommand=self.vsb.set)
         self.vsb.pack(side=tk.RIGHT,fill=tk.Y)
         self.text.pack(side=tk.LEFT,fill=tk.BOTH)
-        self.text.tag_config('return',background="gray",foreground="cyan")
-        self.text.tag_config('print',background="white",foreground=greenblue)
+##        self.text.tag_config('return',background="#e1e1e1",foreground="black")
+##        self.text.tag_config('print',background="white",foreground=greenblue)
 
     def init_Entry(self):
         subframe2=tk.Frame(self,borderwidth=1,relief="sunken")
@@ -55,6 +52,7 @@ class Console(tk.Frame,ListenerInterface):
         self.entry.unbind('<Button-1>',self.on_click_id)
     def on_return(self,event=None):
         text=self.entry.get()
+        self.entry.delete(0,tk.END)
         self.master.callMessages(text)
 
     def addTextConsoleMessage(self,text):
@@ -65,12 +63,13 @@ class Console(tk.Frame,ListenerInterface):
 
     def addTextConsoleAnswer(self,text):
         self.text.configure(state=tk.NORMAL)
-        self.text.insert(tk.END,"& "+text+"\n",'return')
+        self.text.insert(tk.END,"\n")
+        self.text.insert(tk.END,"& "+text+"\n")#,'return')
         self.text.see(tk.END)
         self.text.configure(state=tk.DISABLED)
     def addTextConsolePrint(self,text):
         self.text.configure(state=tk.NORMAL)
-        self.text.insert(tk.END,"< "+text+"\n",'print')
+        self.text.insert(tk.END,"< "+text+"\n")#,'print')
         self.text.see(tk.END)
         self.text.configure(state=tk.DISABLED)
 
@@ -96,9 +95,6 @@ class RightWindow(tk.Frame,ListenerInterface):
     def initUI(self):
         #Right Vertical frame with three horizontal frames
         self.pack(fill=tk.BOTH,side=tk.RIGHT)
-
-
-
         subframe1=tk.Frame(self,borderwidth=1,relief="sunken")
         subframe1.pack(fill=tk.BOTH,side=tk.TOP,padx=(1,1),pady=(1,1))
         subframe2=tk.Frame(self,borderwidth=1,relief="sunken")
@@ -119,34 +115,14 @@ class RightWindow(tk.Frame,ListenerInterface):
         subframe6.pack(fill=tk.BOTH,side=tk.TOP,padx=(1,1),pady=(1,1))
         empty=tk.Frame(self,borderwidth=1,relief="sunken")
         empty.pack(fill=tk.BOTH,side=tk.TOP,expand=True,padx=(1,1),pady=(1,1))
-        # host button
-        self.hostButton=tk.Button(subframe1,text='Host',command=self.host,width=8,state="disabled")
-        self.hostButton.pack(side=tk.LEFT,padx=5,pady=5)
-
-        self.labelText=tk.StringVar()
-        self.labelText.set('ip of host')
-        self.entryHost=tk.Entry(subframe1,textvariable=self.labelText,justify='center',readonlybackground="white",state="readonly")
-        self.entryHost.pack(fill=tk.X,padx=5,pady=5,expand=True)
-
-        # join button
-        self.joinButton=tk.Button(subframe2,text='Join',command=self.join,width=8,state="disabled")
-        self.joinButton.pack(side=tk.LEFT,padx=5,pady=5)
-
-        # join entry
-        self.joinEntry=tk.Entry(subframe2,justify='center',state="disabled")
-        self.joinEntry.pack(side=tk.LEFT,fill=tk.X,padx=5,expand=True)
-        # join entry
-        self.joinportEntry=EntryInteger(subframe2,justify='center',state="disabled")
-        self.joinportEntry.pack(fill=tk.X,padx=5,expand=True)
-
-
+        
         # connect button
         self.connectButton=tk.Button(subframe3,text='Connect',command=self.on_returnConnect,width=8)
         self.connectButton.pack(side=tk.LEFT,padx=5,pady=5)
 
         # connect entry
         entry_text=tk.StringVar()
-        entry_text.set("192.168.0.78")
+        entry_text.set("192.168.0.53")
         self.connectentry=tk.Entry(subframe3,justify='center',textvariable=entry_text)
         self.connectentry.pack(fill=tk.X,padx=5,expand=True)
 
@@ -163,25 +139,18 @@ class RightWindow(tk.Frame,ListenerInterface):
         self.radioVxi11.select()
 
         # port
-##        self.portEntryText=tk.StringVar()
-##        self.portEntryText.set("0")
         self.portLabel=tk.Label(options1,text='Port')
         self.portLabel.pack(side=tk.TOP,padx=5,pady=5)
         self.portEntry=EntryInteger(options1,justify='center',state="disabled")#,textvariable=self.portEntryText)
         self.portEntry.pack(side=tk.TOP,padx=5)
         self.portEntry.set("0")
 
-
-
         # gpib adress
-##        self.gpibEntryText=tk.StringVar()
-##        self.gpibEntryText.set("18")
         self.gpibLabel=tk.Label(options1,text='GPIB addr')
         self.gpibLabel.pack(side=tk.TOP,padx=5,pady=5)
         self.gpibEntry=EntryInteger(options1,justify='center',state="disabled")#,textvariable=self.gpibEntryText)
         self.gpibEntry.pack(side=tk.TOP,padx=5)
         self.gpibEntry.set("18")
-
 
         # CONFIG
         configLabel=tk.Label(subframe5,text='Config',width=8)
@@ -202,13 +171,6 @@ class RightWindow(tk.Frame,ListenerInterface):
         # connect probe button
         probeButton=tk.Button(subframe6,text='Connect',command=self.enableProbe,width=12)
         probeButton.pack(side=tk.LEFT,padx=5,pady=5)
-
-##        probeLabel=tk.Label(subframe6,text='Com Port')
-##        probeLabel.pack(side=tk.TOP,padx=5,pady=5)
-##        self.probeEntry=EntryInteger(subframe6,justify='center')
-##        self.probeEntry.pack(side=tk.TOP,padx=5)
-##        self.probeEntry.set("6")
-
 
     def editConfig(self):
         self.master.configWindow=config.openfile(self.master)
@@ -237,20 +199,7 @@ class RightWindow(tk.Frame,ListenerInterface):
             self.portEntry.set("9001")
     def initScript(self):
         # connect entry
-
         self.connectentry.bind('<Return>',self.on_returnConnect)
-    def host(self):
-        if(self.master.hostserver.isRunning):
-            self.master.hostserver.stop()
-            self.labelText.set("host ip")
-        else:
-            self.master.hostserver.init()
-##            self.labelText.set(ip)
-    def join(self):
-        ip=self.joinEntry.get()
-        port=int(self.joinportEntry.get())
-        self.master.joinclient.init((ip,port))
-
 
     def on_returnConnect(self,event=None):
         ip=self.connectentry.get()
@@ -258,8 +207,6 @@ class RightWindow(tk.Frame,ListenerInterface):
         gpib=int(self.gpibEntry.get());
         port=int(self.portEntry.get());
 
-
-##        print(str(var)+" "+self.gpibEntry.get()+" "+self.portEntry.get())
         if(var == 1):
             listip=vxi11.list_devices(ip)
 
@@ -325,267 +272,6 @@ class RightWindow(tk.Frame,ListenerInterface):
             except (tk.TclError,RuntimeError):
                 # Ignore the issue when the soft is down and where the background thread try to reach the dead main thread
                 pass
-##
-##class HostHandler(socketserver.StreamRequestHandler):
-##    def handle(self):
-##        try:
-##            self.master.rightWindow.setActiveHost(0)
-##            while(self.isRunning):
-##                if self.messageToSend!=None:
-##                    self.request.send(self.messageToSend.encode())
-##                    self.messageToSend=None
-##                try:
-##                    data=self.request.recv(1024).decode()
-##                    print('host received "%s"' % data)
-##                    if(data==""):
-##                        self.isRunning=False
-##                        self.request.close()
-##                        self.connected=False
-##                        #closed
-##                        pass
-##                    if (data):
-##                        self.master.callMessages(data)
-##                    else:
-##                        break
-##                except socket.timeout:
-##                    pass
-##            self.request.send(b'')
-##        finally:
-##            self.server.close()
-##            self.master.rightWindow.setActiveHost(1)
-##        return
-##
-##class HostServer2(ListenerInterface):
-##    def  __init__(self,master):
-##        self.master=master
-##        self.isRunning=False
-##        self.messageToSend=None
-##        self.connected=False
-##        self.server_address=None
-##        self.hostsocket=None
-##
-####        self.hostsocket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-##    def stop(self):
-##        if not self.connected and self.isRunning:
-##            socket.socket(socket.AF_INET,socket.SOCK_STREAM).connect(self.address)
-##        self.isRunning=False
-##
-##    def init(self):
-##        self.master.rightWindow.setActiveHost(2)
-##        external_ip=None
-##        try:
-##            external_ip=urllib.request.urlopen('https://v4.ident.me').read().decode('utf8')
-##        except Exception:
-##            external_ip=socket.gethostbyname(socket.gethostname())
-##
-####        print(external_ip)
-##        self.address = ('127.0.0.1', 0) # let the kernel give us a port
-##        self.server = socketserver.TCPServer(self.address, HostHandler)
-##        self.server.allow_reuse_address=True
-##        self.server.timeout=1
-##        ip, port = self.server.server_address # find out what port we were given
-##        t = threading.Thread(target=self.server.serve_forever)
-##        t.setDaemon(False) # don't hang on exit
-##        t.start()
-##        self.address=(ip,port)
-##        print(str(ip)+" "+str(port))
-##        return external_ip
-##
-##    def callAnswer(self, textAnswer):
-##        self.messageToSend=textAnswer
-##
-##    def isRunning(self):
-##        return self.isRunning
-
-
-
-class HostServer(ListenerInterface):
-    def  __init__(self,master):
-        self.master=master
-        self.isRunning=False
-        self.thread=None
-        self.messageToSend=None
-        self.connected=False
-        self.server_address=None
-        self.hostsocket=None
-
-##        self.hostsocket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-    def stop(self):
-        if not self.connected and self.isRunning:
-            if(self.server_address!=None):
-                socket.socket(socket.AF_INET,socket.SOCK_STREAM).connect(('127.0.0.1',self.server_address[1]))
-        self.isRunning=False
-
-    def __run(self):
-        self.isRunning=True
-        self.master.rightWindow.setActiveHost(2)
-        try:
-            self.hostsocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            self.hostsocket.bind(self.server_address)
-##            print(self.hostsocket.getsockname())
-            ip,port=self.hostsocket.getsockname()
-            external_ip=None
-            if not self.isRunning:
-                self.master.rightWindow.setActiveHost(1)
-                self.hostsocket.close()
-                return
-
-            try:
-                external_ip=urllib.request.urlopen('https://v4.ident.me').read().decode('utf8')
-            except Exception:
-                external_ip=socket.gethostbyname(socket.gethostname())
-##            print(external_ip)
-            print(str(external_ip)+" "+str(port))
-            self.server_address=self.hostsocket.getsockname()
-            values=setupPort(port)
-            if not self.isRunning:
-                self.master.rightWindow.setActiveHost(1)
-                self.hostsocket.close()
-                return
-            if(values[1]==""):
-                self.master.rightWindow.setActiveHost(1)
-                self.hostsocket.close()
-
-                self.isRunning=False
-                self.master.rightWindow.labelText.set("Error")
-                return
-            self.master.rightWindow.labelText.set(str(external_ip)+":"+str(port))
-            self.hostsocket.settimeout(1)
-            self.hostsocket.listen(1)
-##            self.hostsocket=socketserver.TCPServer(self.server_address)
-##            print(str(self.hostsocket.server_address))
-            self.master.rightWindow.setActiveHost(2)
-            while(self.isRunning):
-                try:
-                    connection, client_address = self.hostsocket.accept()
-                    self.connected=True
-                except socket.timeout:
-                    continue
-                else:
-                    if not self.isRunning:
-                        break
-                    try:
-                        self.master.rightWindow.setActiveHost(0)
-                        connection.settimeout(1)
-        ##                print('client connected: '+client_address)
-                        while(self.isRunning):
-                            if self.messageToSend!=None:
-                                connection.send(self.messageToSend.encode())
-                                self.messageToSend=None
-                            try:
-                                data=connection.recv(1024).decode()
-                                print('host received "%s"' % data)
-                                if(data==""):
-                                    self.isRunning=False
-                                    connection.shutdown(socket.SHUT_RDWR)
-                                    connection.close()
-                                    self.connected=False
-                                    #closed
-                                    pass
-                                if (data):
-                                    self.master.callMessages(data)
-                                else:
-                                    break
-                            except socket.timeout:
-                                pass
-                    finally:
-            ##                self.master.rightWindow.setActiveHost(False)
-                        connection.shutdown(socket.SHUT_RDWR)
-                        connection.close()
-                        self.isRunning=False
-                    self.connected=False
-        finally:
-            self.master.rightWindow.setActiveHost(1)
-##            self.hostsocket.shutdown(socket.SHUT_RDWR)
-            self.hostsocket.close()
-            self.hostsocket=None
-            self.isRunning=False
-
-    def init(self):
-        self.master.rightWindow.setActiveHost(2)
-        server_name=socket.gethostname()
-##        external_ip=None
-##        try:
-##            external_ip=urllib.request.urlopen('https://v4.ident.me').read().decode('utf8')
-##        except Exception:
-##            external_ip=socket.gethostbyname(socket.gethostname())
-##        print(external_ip)
-        self.server_address=("127.0.0.1",0)#(server_name,1060)
-##        self.server_address=(external_ip,0)#(server_name,1060)
-
-        print(server_name)
-        self.thread=threading.Thread(target=self.__run)
-        self.thread.start()
-##        return external_ip+" "+
-
-##        return socket.gethostbyname(server_name)
-    def callAnswer(self, textAnswer):
-        self.messageToSend="1:"+convertBytesToString(textAnswer)
-    def callPrint(self, text):
-        self.messageToSend="2:"+text
-    def isRunning(self):
-        return self.isRunning
-
-class JoinClient(ListenerInterface):
-    def  __init__(self,master):
-        self.master=master
-        self.isRunning=False
-        self.thread=None
-        self.message=None
-        self.server_address=None
-        self.joinsocket=None
-    def stop(self):
-        self.isRunning=False
-    def __run(self):
-
-        self.isRunning=True
-        self.master.rightWindow.setActiveJoin(2)
-        try:
-            self.joinsocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            self.joinsocket.connect(self.server_address)
-            self.master.rightWindow.setActiveJoin(0)
-            self.joinsocket.settimeout(1)
-            while(self.isRunning):
-                if(self.message!=None):
-                    self.joinsocket.send(self.message.encode())
-                    self.message=None
-                try:
-    ##                    print(str(type(self.joinsocket)))
-                    data=self.joinsocket.recv(1024).decode()
-                    print('join received "%s"' % data)
-                    if(data==""):
-                        self.isRunning=False
-                        #closed
-                        pass
-
-                    if (data):
-                        text=data.encode()
-                        if(text[:2]=="1:"):
-                            self.master.callAnswers(text[2:])
-                        elif (text[:2]=="1:"):
-                            self.master.callPrints(text[2:])
-                        else:
-                           self.master.callAnswers(text)
-    ##                        connection.sendall(data)
-                    else:
-                        break
-                except socket.timeout:
-                    pass
-        finally :
-            self.master.rightWindow.setActiveJoin(1)
-            self.joinsocket.close()
-    def init(self,address):
-        self.master.rightWindow.setActiveJoin(2)
-        self.server_address=address
-##        self.server_address=(ip,1060)
-        self.thread=threading.Thread(target=self.__run)
-        self.thread.start()
-    def callMessage(self, textMessage):
-        if(self.message==None and self.isRunning):
-            self.message=textMessage
-
-    def isRunning(self):
-        return self.isRunning
 
 class ReadThread(ListenerInterface):
 
@@ -616,8 +302,6 @@ class ReadThread(ListenerInterface):
                             else:
                                barray= self.instr.ask(self.messages[0])
                                if(barray!=None):
-##                                   print(str(type(barray))+" "+str(len(barray)))
-##                                   print("hello"+text)
                                    if type(barray) is bytes and len(barray)>0:
                                        self.master.callAnswers(barray)
                             self.messages=self.messages[1:]
@@ -625,9 +309,7 @@ class ReadThread(ListenerInterface):
                         if(inc>1000*100):
                             inc=0
                             self.master.update()
-##                            print("pass")
                     except Exception as err:
-##                        print("yes")
                         self.messages=self.messages[1:]
                         print(err)
             if self.instr != None:
@@ -639,18 +321,13 @@ class ReadThread(ListenerInterface):
             self.master.rightWindow.setActiveConnect(1)
     def init(self,instr):
         self.instr=instr
-
-##        print(str(type(self.instr)))
         self.thread=threading.Thread(target=self.__run)
         self.thread.start()
     def callMessage(self, textMessage):
-##        print("callMessage "+str(textMessage))
         if(self.isRunning):
             self.messages+=[textMessage]
-##            self.message=textMessage
 
 class Application(tk.Frame):
-
     def  __init__(self,master):
         tk.Frame.__init__(self,master,bg=white)
         self.master=master
@@ -667,21 +344,9 @@ class Application(tk.Frame):
         self.addToListener(self.console)
         self.readThread=ReadThread(self)
         self.addToListener(self.readThread)
-
-        self.hostserver=HostServer(self)
-        self.joinclient=JoinClient(self)
-
-        self.addToListener(self.hostserver)
-        self.addToListener(self.joinclient)
-##        self.plot=plot.openWindow(self.master,random=True)
-
-##        getIpList_Windows()
-
-##        self.configWindow=config.openWindow(self.master,None)
     def createPlot(self):
         if(self.plot == None):
             self.plot=plot.openWindow(self.master)
-
     def addToListener(self,listener):
         self.listeners+=[listener]
     def callAnswers(self,barray):
@@ -689,11 +354,8 @@ class Application(tk.Frame):
             i.callAnswer(barray)
     def callPrints(self,text):
         self.console.callPrint(text)
-        self.hostserver.callPrint(text)
     def callMessages(self,textMessage):
-##        print("callMessages "+str(textMessage))
         for i in self.listeners:
-##            print("hello "+str(i))
             i.callMessage(textMessage)
         self.update()
     def enableConsole(self,boolean):
@@ -709,20 +371,12 @@ class Application(tk.Frame):
     def stop(self):
         self.stopBoolean=True
         self.readThread.stop()
-        self.hostserver.stop()
         if(self.plot!=None):
             self.plot.stop()
         if(self.probe!=None):
             self.probe.destroy()
             self.probeApp.stop()
             self.probe.update()
-        if(self.hostserver.thread!=None):
-            self.hostserver.thread.join()
-        self.joinclient.stop()
-        if(self.joinclient.thread!=None):
-            self.joinclient.thread.join()
-##        if(self.configWindow!=None):
-##            self.configWindow.destroy()
 
 
     def on_closing(self):

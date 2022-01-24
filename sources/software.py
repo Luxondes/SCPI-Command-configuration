@@ -6,6 +6,7 @@ from main import *
 def main():
     
     root=tk.Tk()
+##    root = ThemedTk(theme="kroc")
     root.geometry("800x450+300+300")
     root.resizable(False,False)
     app=Application(root)
