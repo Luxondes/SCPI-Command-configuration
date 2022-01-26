@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk  as ttk
 from tkinter import filedialog as fd
 import os
 import xml.etree.ElementTree as ET
@@ -95,8 +96,7 @@ class Tag(tk.Frame,utils.ListenerInterface):
         if(self.getSend.get() !=None and self.getSend.get()!=""):
             self.test=True
             self.config.master.callMessages(self.getSend.get())
-            self.getSend.configure(bg="yellow")
-##            self.getResponse.configure(bg="yellow")
+            self.getSend.configure(state="alternate")
 
     def callAnswer(self, barray):
         if(self.test):
@@ -112,27 +112,21 @@ class Tag(tk.Frame,utils.ListenerInterface):
                ):
                 try:
                     float(textAnswer.strip())
-                    self.getSend.configure(bg="green")
-##                    self.getResponse.configure(bg="green")
+                    self.getSend.configure(background="green")
                 except ValueError:
                     print('Got '+textAnswer+' but needed a number')
-                    self.getSend.configure(bg="red")
-##                    self.getResponse.configure(bg="red")
+                    self.getSend.configure(background="red")
             if(self.tagname=="AmplitudeUnit"):
                 if(textAnswer.lower().trim() in ["dbm","dbuv","dbmv","v","w","dbua","dbµv","dbµa"]):
-                    self.getSend.configure(bg="green")
-##                    self.getResponse.configure(bg="green")
+                    self.getSend.configure(background="green")
                 else:
                     print('Got '+textAnswer.lower()+' but required dbm, dbuv, dbmv, v, w, dbua, dbµv or dbµa')
-                    self.getSend.configure(bg="red")
-##                    self.getResponse.configure(bg="red")                        
+                    self.getSend.configure(background="red")
             elif(' ' not in textAnswer.strip()):
-                self.getSend.configure(bg="green")
-##                self.getResponse.configure(bg="green")
+                self.getSend.configure(background="green")
             else:
                 print('Got '+textAnswer+' but needed something')
-                self.getSend.configure(bg="red")
-##                self.getResponse.configure(bg="red")
+                self.getSend.configure(background="red")
             self.test=False
     def onClickCheckBox(self):
         if(self.checkbutton[1].get()):
@@ -336,13 +330,13 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
 
             if not init:
                 self.config.master.callPrints("Lack of a init line for set the type (int, float, double, ascii) of the data returned")
-                self.getSend.configure(bg="red")
+                self.getSend.configure(background="red")
                 return
             for i in range(0,plot.linesmax+1):
                 self.config.master.callMessages(self.getSend.get())
             self.testPlot=plot.linesmax  
 ##            print(plot.linesmax+";"+self.testPlot
-            self.getSend.configure(bg="yellow")
+            self.getSend.configure(background="yellow")
         
     def onTestButton(self):
         if(self.getSend.get() !=None and self.getSend.get()!=""):
@@ -360,10 +354,10 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
 
             if not init:
                 self.config.master.callPrints("Lack of a init line for set the type (int, float, double, ascii) of the data returned")
-                self.getSend.configure(bg="red")
+                self.getSend.configure(background="red")
                 return
             self.config.master.callMessages(self.getSend.get())
-            self.getSend.configure(bg="yellow")
+            self.getSend.configure(background="yellow")
     def testPlotAnswer(self,barray):
 ##        print("onTestPlotButton")
         inc =0
@@ -404,7 +398,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
 ##                maxf=max(f,maxf)
         if(self.testPlot==0):
             self.testPlot=-1
-            self.getSend.configure(bg="green")
+            self.getSend.configure(background="green")
             self.config.master.enableConsole(True)
             self.config.master.callPrints("The Plot is done")
             
@@ -426,15 +420,15 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
             if(self.headertag.textvar.get() == self.headertag.optionList[2]): #"#A"
                 if(str(barray[:2]) != '#A'):
                     self.config.master.callPrints("Got a header '"+utils.convertBytesToString(barray[:2])+"' but needed '#A'")
-                    self.getSend.configure(bg="red")
+                    self.getSend.configure(background="red")
                     return
                 numberHeaderBytes=struct.unpack('H'*2,barray[2,4])
                 self.config.master.callPrints("#A reader not implemented : "+str(numberHeaderBytes))
-                self.getSend.configure(bg="red")
+                self.getSend.configure(background="red")
             elif(self.headertag.textvar.get() == self.headertag.optionList[1]):#"IEEE 754"
                 if(str(barray[:1]) != "b'#'" or str(barray[1:2]) < "b'0'" or str(barray[1:2]) > "b'9'"):
                     self.config.master.callPrints("Got a header '"+utils.convertBytesToString(barray[:2])+"' but needed '#X' where X is a number")
-                    self.getSend.configure(bg="red")
+                    self.getSend.configure(background="red")
                     return
                 c=str(barray[1:2])[2]
 ##                    self.config.master.callPrints("Number of Points1 : "+str(c))
@@ -442,7 +436,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
                 c=barray[2:2+v].decode('ascii')
                 nbpts=int(str(c))/self.listResponseShortBytes[inc]
                 self.config.master.callPrints("Number of Points : "+str(nbpts))
-                self.getSend.configure(bg="green")
+                self.getSend.configure(background="green")
                 listpts= utils.readPoints(barray[2+v:],int(str(c)),inc,0)
                 maxf=float("-inf")
                 for f in listpts:
@@ -455,7 +449,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
                 
             else:
                 self.config.master.callPrints("Number of Points : "+str(c))
-                self.getSend.configure(bg="red")
+                self.getSend.configure(background="red")
         elif inc==5:
             listpts= utils.readPoints(barray,-1,inc,0)
             maxf=float("-inf")
@@ -463,7 +457,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
                 maxf=max(f,maxf)                  
             print("Max value of all points : "+str(maxf))
             self.config.master.callPrints("Max value of all points : "+str(maxf))
-            self.getSend.configure(bg="green")
+            self.getSend.configure(background="green")
 
     def callAnswer(self, barray):
         #Create a plot where you call the command 99 others times if the command is good on the first.
@@ -830,7 +824,7 @@ class Config(tk.Frame,utils.ListenerInterface):
 
     
     def  __init__(self,root,filename,master):
-        tk.Frame.__init__(self,root,bg=utils.white)
+        tk.Frame.__init__(self,root)
         self.pack(fill=tk.BOTH,expand=True)
         self.master=master
         self.tags=[]
@@ -863,15 +857,15 @@ class Config(tk.Frame,utils.ListenerInterface):
         self.bottomhint=tk.Frame(self,borderwidth=1,relief="sunken")
         self.labelHint=tk.Label(self.bottomhint,text="",anchor="w",justify=tk.LEFT)
         # FORM
-        canvasscroll=tk.Frame(self,bg=utils.white)
+        canvasscroll=tk.Frame(self)
         
-        canvas=tk.Canvas(canvasscroll,bg=utils.white)
+        canvas=tk.Canvas(canvasscroll)
 
         
         vscrollbar= tk.Scrollbar(canvasscroll,orient=tk.VERTICAL,command=canvas.yview)
 ##        hscrollbar= tk.Scrollbar(self,orient=tk.HORIZONTAL,command=canvas.xview,bg=utils.white)
 
-        self.scrollable_frame=tk.Frame(canvas,bg=utils.white)
+        self.scrollable_frame=tk.Frame(canvas)
         self.scrollable_frame.pack(fill=tk.BOTH,side=tk.TOP,expand=True)
         self.scrollable_frame.bind('<Configure>',
                                    lambda e:
@@ -899,8 +893,8 @@ class Config(tk.Frame,utils.ListenerInterface):
         self.initBottomMenu()
 
 
-        frame1=createFrame(self.scrollable_frame)
-        createTitleLabel(frame1,tk.LEFT,"Notes",width=8)
+        frame1=createFrame(self.scrollable_frame,text="Notes")
+##        createTitleLabel(frame1,tk.LEFT,"Notes",width=8)
         frame2=createSubFrame(frame1)
         
         
@@ -995,12 +989,8 @@ class Config(tk.Frame,utils.ListenerInterface):
         self.hint3=Hint("Setter ex: :FREQ:CENTER 1000 Mhz -> :FREQ:CENTER Value Unit, if no unit, the 1000 will be converted to Hz before",None,self)
         self.hint4=Hint("Getter: Require always a '?', always wait a answer. The answer need to be only a integer,float or a unit",None,self)
         self.hint5=Hint("Response is 'Value'",None,self)
-
-##        
         self.labelHint.pack(side=tk.BOTTOM,padx=0,fill=tk.X,pady=0,expand=True)        
         
-##    def on_configure(self,event):
-##        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
     def addHintWidget(self,hint,widget):
         if hint == 1: # "(1): Default can be 'None' or empty"
             self.hint1.addWidget(widget)
@@ -1091,8 +1081,8 @@ def indent(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
             
-def createFrame(parent):
-    subframe=tk.Frame(parent,borderwidth=1,relief="sunken")
+def createFrame(parent,text=None):
+    subframe=ttk.LabelFrame(parent,text=text,padding=(5,5))
     subframe.pack(fill=tk.X,side=tk.TOP,expand=True,padx=(1,1),pady=(1,1))
     return subframe
 def createSubFrame(parent,side=tk.TOP):
@@ -1139,16 +1129,18 @@ def openWindow(toproot,filename):
     width=800
     widthconfig=600
     x=pos[0]+int(splits[0].split('x')[0])+5
-##    print(str(x)+" "+str(screen_width))
     if(x+widthconfig>screen_width):
         x=pos[0]-widthconfig-5
 
     root.geometry(str(widthconfig)+"x450+%d+%d"%(x,y))
-##    root.resizable(False,False)
 
     app=Config(root,filename,toproot)
     toproot.addToListener(app)
     root.title('Config')
+##    root.style = ttk.Style(root)
+    root.iconbitmap(utils.getPathIcon())
+##    root.style.theme_use("forest-light")
+    
     return root
 
 def openfile(toproot):

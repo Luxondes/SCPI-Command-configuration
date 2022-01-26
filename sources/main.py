@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 import tkinter as tk
+import tkinter.ttk as ttk
 
 import threading
 import socket
@@ -14,7 +14,7 @@ import probe
 
 class Console(tk.Frame,ListenerInterface):
     def  __init__(self,master):
-        tk.Frame.__init__(self,master,bg=white)
+        tk.Frame.__init__(self,master)
         self.pack(fill=tk.BOTH,side=tk.LEFT,expand=True,padx=(1,1),pady=(1,1))
         self.master=master
         self.init_Text()
@@ -22,12 +22,12 @@ class Console(tk.Frame,ListenerInterface):
         self.enabled=True
 
     def init_Text(self):
-        subframe1=tk.Frame(self,borderwidth=1,relief="sunken")
+        subframe1=ttk.Frame(self,borderwidth=1,relief="sunken")
         subframe1.pack(fill=tk.BOTH,side=tk.TOP,expand=True,padx=(1,1),pady=(1,1))
         self.text=tk.Text(subframe1,relief="flat")
         self.text.configure(state=tk.DISABLED)
         self.text.bind("<1>", lambda event: self.text.focus_set())
-        self.vsb=tk.Scrollbar(subframe1,orient="vertical",command=self.text.yview)
+        self.vsb=ttk.Scrollbar(subframe1,orient="vertical",command=self.text.yview)
         self.text.configure(yscrollcommand=self.vsb.set)
         self.vsb.pack(side=tk.RIGHT,fill=tk.Y)
         self.text.pack(side=tk.LEFT,fill=tk.BOTH)
@@ -35,11 +35,11 @@ class Console(tk.Frame,ListenerInterface):
 ##        self.text.tag_config('print',background="white",foreground=greenblue)
 
     def init_Entry(self):
-        subframe2=tk.Frame(self,borderwidth=1,relief="sunken")
+        subframe2=ttk.Frame(self,borderwidth=1,relief="sunken")
         subframe2.pack(fill=tk.BOTH,side=tk.TOP,expand=True,padx=(1,1),pady=(1,1))
-        self.label=tk.Label(subframe2,text="cmd:")
+        self.label=ttk.Label(subframe2,text="cmd:")
         self.label.pack(side=tk.LEFT,padx=5,pady=5)
-        self.entry=tk.Entry(subframe2)
+        self.entry=ttk.Entry(subframe2)
         self.entry.pack(fill=tk.X,padx=5,expand=True)
         self.entry.insert(0,"*idn?")
         self.entry.configure(state=tk.DISABLED)
@@ -86,7 +86,7 @@ class Console(tk.Frame,ListenerInterface):
 class RightWindow(tk.Frame,ListenerInterface):
 
     def  __init__(self,master):
-        tk.Frame.__init__(self,master,bg=white)
+        tk.Frame.__init__(self,master,padx=5,pady=5)
         self.master=master
         self.instr=None
         self.initUI()
@@ -95,82 +95,72 @@ class RightWindow(tk.Frame,ListenerInterface):
     def initUI(self):
         #Right Vertical frame with three horizontal frames
         self.pack(fill=tk.BOTH,side=tk.RIGHT)
-        subframe1=tk.Frame(self,borderwidth=1,relief="sunken")
-        subframe1.pack(fill=tk.BOTH,side=tk.TOP,padx=(1,1),pady=(1,1))
-        subframe2=tk.Frame(self,borderwidth=1,relief="sunken")
-        subframe2.pack(fill=tk.BOTH,side=tk.TOP,padx=(1,1),pady=(1,1))
-        subframe3=tk.Frame(self,borderwidth=1,relief="sunken")
+        subframe3=ttk.LabelFrame(self, text="Device", padding=(5, 5))
         subframe3.pack(fill=tk.BOTH,side=tk.TOP,padx=(1,1),pady=(1,1))
 
-        subframe4=tk.Frame(self,bg=white)
+        subframe4=tk.Frame(self)
         subframe4.pack(fill=tk.BOTH,side=tk.TOP)
-        radiolayout=tk.Frame(subframe4,borderwidth=1,relief="sunken")
+        radiolayout=ttk.LabelFrame(subframe4, text="Connection choice", padding=(5, 5))
         radiolayout.pack(fill=tk.BOTH,side=tk.LEFT,padx=(1,1),pady=(1,1))
-        options1=tk.Frame(subframe4,borderwidth=1,relief="sunken")
+        options1=ttk.LabelFrame(subframe4, text="Connection options", padding=(5, 5))
         options1.pack(fill=tk.BOTH,side=tk.LEFT,expand=True,padx=(1,1),pady=(1,1))
 
-        subframe5=tk.Frame(self,borderwidth=1,relief="sunken")
+        subframe5=ttk.LabelFrame(self,text='Config', padding=(5, 5))
         subframe5.pack(fill=tk.BOTH,side=tk.TOP,padx=(1,1),pady=(1,1))
-        subframe6=tk.Frame(self,borderwidth=1,relief="sunken")
+        subframe6=ttk.LabelFrame(self,text='Probe', padding=(5, 5))
         subframe6.pack(fill=tk.BOTH,side=tk.TOP,padx=(1,1),pady=(1,1))
-        empty=tk.Frame(self,borderwidth=1,relief="sunken")
-        empty.pack(fill=tk.BOTH,side=tk.TOP,expand=True,padx=(1,1),pady=(1,1))
-        
+
         # connect button
-        self.connectButton=tk.Button(subframe3,text='Connect',command=self.on_returnConnect,width=8)
+        self.connectButton=ttk.Button(subframe3,text='Connect',command=self.on_returnConnect,width=8)
         self.connectButton.pack(side=tk.LEFT,padx=5,pady=5)
 
         # connect entry
-        entry_text=tk.StringVar()
-        entry_text.set("192.168.0.53")
-        self.connectentry=tk.Entry(subframe3,justify='center',textvariable=entry_text)
+        self.connectentry=ttk.Entry(subframe3, font='bold',justify='center')
         self.connectentry.pack(fill=tk.X,padx=5,expand=True)
+        self.connectentry.insert(0,"192.168.0.53")
 
         # Radio group
-        self.radioLabel=tk.Label(radiolayout,text="Connection choice :")
-        self.radioLabel.pack(side=tk.TOP,padx=5,pady=5)
         self.radioVar=tk.IntVar()
-        self.radioVxi11=tk.Radiobutton(radiolayout,text="vxi11",variable=self.radioVar,value=1,command=self.selectRadio)
+        self.radioVxi11=ttk.Radiobutton(radiolayout,text="vxi11",variable=self.radioVar,value=1,command=self.selectRadio)
         self.radioVxi11.pack(side=tk.TOP,padx=5,pady=5)
-        self.radioGPIB=tk.Radiobutton(radiolayout,text="gpib",variable=self.radioVar,value=2,command=self.selectRadio)
+        self.radioGPIB=ttk.Radiobutton(radiolayout,text="gpib",variable=self.radioVar,value=2,command=self.selectRadio)
         self.radioGPIB.pack(side=tk.TOP,padx=5,pady=5)
-        self.radioRaw=tk.Radiobutton(radiolayout,text="raw",variable=self.radioVar,value=3,command=self.selectRadio)
+        self.radioRaw=ttk.Radiobutton(radiolayout,text="raw",variable=self.radioVar,value=3,command=self.selectRadio)
         self.radioRaw.pack(side=tk.TOP,padx=5,pady=5)
-        self.radioVxi11.select()
+##        self.radioVxi11.select()
+        
 
         # port
-        self.portLabel=tk.Label(options1,text='Port')
+        self.portLabel=ttk.Label(options1,text='Port')
         self.portLabel.pack(side=tk.TOP,padx=5,pady=5)
-        self.portEntry=EntryInteger(options1,justify='center',state="disabled")#,textvariable=self.portEntryText)
+        self.portEntry=EntryInteger(options1, font='bold',justify='center')#,textvariable=self.portEntryText)
         self.portEntry.pack(side=tk.TOP,padx=5)
         self.portEntry.set("0")
 
         # gpib adress
         self.gpibLabel=tk.Label(options1,text='GPIB addr')
         self.gpibLabel.pack(side=tk.TOP,padx=5,pady=5)
-        self.gpibEntry=EntryInteger(options1,justify='center',state="disabled")#,textvariable=self.gpibEntryText)
+        self.gpibEntry=EntryInteger(options1, font='bold',justify='center')#,textvariable=self.gpibEntryText)
         self.gpibEntry.pack(side=tk.TOP,padx=5)
         self.gpibEntry.set("18")
 
         # CONFIG
-        configLabel=tk.Label(subframe5,text='Config',width=8)
-        configLabel.pack(side=tk.LEFT,padx=5,pady=5)
-
         # new config button
-        newconfigButton=tk.Button(subframe5,text='New',command=self.newConfig,width=12)
+        newconfigButton=ttk.Button(subframe5,text='New',command=self.newConfig,width=12)
         newconfigButton.pack(side=tk.LEFT,padx=5,pady=5)
 
         # edit config button
-        editconfigButton=tk.Button(subframe5,text='Edit',command=self.editConfig,width=12)
+        editconfigButton=ttk.Button(subframe5,text='Edit',command=self.editConfig,width=12)
         editconfigButton.pack(side=tk.LEFT,padx=5,pady=5)
 
         # PROBE
-        probeLabel=tk.Label(subframe6,text='Probe',width=8)
-        probeLabel.pack(side=tk.LEFT,padx=5,pady=5)
 
         # connect probe button
-        probeButton=tk.Button(subframe6,text='Connect',command=self.enableProbe,width=12)
+        probeButton=ttk.Button(subframe6,text='Connect',command=self.enableProbe,width=12)
         probeButton.pack(side=tk.LEFT,padx=5,pady=5)
+
+
+        self.radioVxi11.invoke()
 
     def editConfig(self):
         self.master.configWindow=config.openfile(self.master)
@@ -231,21 +221,6 @@ class RightWindow(tk.Frame,ListenerInterface):
 
         self.setActiveConnect(1)
 
-
-
-
-    def setActiveJoin(self,colorchoice):
-        if(threading.main_thread().is_alive() and not self.master.stopBoolean):
-            try:
-                if(colorchoice==0):
-                    self.joinEntry.configure(bg="green")
-                elif(colorchoice==1):
-                    self.joinEntry.configure(bg="red")
-                else:
-                    self.joinEntry.configure(bg="yellow")
-            except (tk.TclError,RuntimeError):
-                # Ignore the issue when the soft is down and where the background thread try to reach the dead main thread
-                pass
     def setActiveConnect(self,colorchoice):
         if(threading.main_thread().is_alive() and not self.master.stopBoolean):
             try:
@@ -255,20 +230,6 @@ class RightWindow(tk.Frame,ListenerInterface):
                     self.connectentry.configure(bg="red")
                 else:
                     self.connectentry.configure(bg="yellow")
-            except (tk.TclError,RuntimeError):
-                # Ignore the issue when the soft is down and where the background thread try to reach the dead main thread
-                pass
-
-    def setActiveHost(self,colorchoice):
-
-        if(threading.main_thread().is_alive() and not self.master.stopBoolean):
-            try:
-                if(colorchoice==0):
-                    self.entryHost.configure(readonlybackground="green")
-                elif(colorchoice==1):
-                    self.entryHost.configure(readonlybackground="red")
-                else:
-                    self.entryHost.configure(readonlybackground="yellow")
             except (tk.TclError,RuntimeError):
                 # Ignore the issue when the soft is down and where the background thread try to reach the dead main thread
                 pass
@@ -329,7 +290,8 @@ class ReadThread(ListenerInterface):
 
 class Application(tk.Frame):
     def  __init__(self,master):
-        tk.Frame.__init__(self,master,bg=white)
+        tk.Frame.__init__(self,master)
+
         self.master=master
         self.pack(fill=tk.BOTH,expand=True)
         self.listeners=[]

@@ -1,0 +1,11 @@
+<Cmd-SCPI>
+  <Copyright>LUXONDES</Copyright>
+  <File_ver />
+  <Date />
+  <Marque />
+  <Mode>Spectrum</Mode>
+  <DeviceNames />
+  <Init />
+  <Endian>LITTLE</Endian>
+  <GetPoints />
+</Cmd-SCPI>

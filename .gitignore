@@ -4,3 +4,4 @@ dist/software.exe
 __pycache__
 build
 tmp
+sources/graphics

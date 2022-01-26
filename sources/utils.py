@@ -1,4 +1,5 @@
 import tkinter as tk
+##import tkinter.ttk as ttk
 from port_forwarding import setup_port_map
 from port_forwarding import PortMapFailed
 import struct
@@ -29,6 +30,16 @@ class EntryInteger(tk.Entry):
         value=self.get()
         if not value.isdigit():
             self.set(''.join(x for x in value if x.isdigit()))
+    def setBg(self,i):
+        if i==0:
+            self.configure(bg="white")
+        elif i==1:
+            self.configure(bg="red")
+        elif i==2:
+            self.configure(bg="yellow")
+        elif i==3:
+            self.configure(bg="green")
+        
 class EntrySimplified(tk.Entry):
     def __init__(self,master=None,**kwargs):
         self.var= tk.StringVar(master)
@@ -37,7 +48,16 @@ class EntrySimplified(tk.Entry):
         self.get,self.set=self.var.get,self.var.set
     def validate(self,*args):
         value=self.get()
-        self.configure(bg="white")
+        self.setBg(0)
+    def setBg(self,i):
+        if i==0:
+            self.configure(bg="white")
+        elif i==1:
+            self.configure(bg="red")
+        elif i==2:
+            self.configure(bg="yellow")
+        elif i==3:
+            self.configure(bg="green")
 def setupPort(port):
     try:
         internal_ip, external_ip=setup_port_map(port)
@@ -113,6 +133,23 @@ def getIpList_Windows():
         print (y)
         if(y.strip().startswith(ip)):
             print (":::"+y)
+
+            
+def getPathForest():
+    return getPath()+"\\graphics\\forest-light.tcl"
+def getPathIcon():
+    return getPath()+"\\graphics\\app_icon_round.ico"
+def getOneImage():
+    return tk.PhotoImage(file=getPath()+"\\graphics\\forest-light\\border-alternate.png")
+
+# Get the path of this script for get the correct path
+def getPath():
+    scriptPath = os.path.realpath(__file__)
+    # reverse the string
+    rev_s = scriptPath[::-1]
+    # get last index of the req. character
+    stri=scriptPath[0:len(scriptPath) - rev_s.index("\\") - 1]
+    return stri
         
 ##        z=y.find(mac_address)
 ##    devices=[]
