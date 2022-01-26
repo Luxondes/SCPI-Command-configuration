@@ -115,7 +115,7 @@ class RightWindow(tk.Frame,ListenerInterface):
         self.connectButton.pack(side=tk.LEFT,padx=5,pady=5)
 
         # connect entry
-        self.connectentry=ttk.Entry(subframe3, font='bold',justify='center')
+        self.connectentry=tk.Entry(subframe3, font='bold',justify='center')
         self.connectentry.pack(fill=tk.X,padx=5,expand=True)
         self.connectentry.insert(0,"192.168.0.53")
 

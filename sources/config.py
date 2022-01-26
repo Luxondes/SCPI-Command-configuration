@@ -96,7 +96,6 @@ class Tag(tk.Frame,utils.ListenerInterface):
         if(self.getSend.get() !=None and self.getSend.get()!=""):
             self.test=True
             self.config.master.callMessages(self.getSend.get())
-            self.getSend.configure(state="alternate")
 
     def callAnswer(self, barray):
         if(self.test):
@@ -112,21 +111,21 @@ class Tag(tk.Frame,utils.ListenerInterface):
                ):
                 try:
                     float(textAnswer.strip())
-                    self.getSend.configure(background="green")
+                    self.getSend.setBg(3)
                 except ValueError:
                     print('Got '+textAnswer+' but needed a number')
-                    self.getSend.configure(background="red")
+                    self.getSend.setBg(1)
             if(self.tagname=="AmplitudeUnit"):
                 if(textAnswer.lower().trim() in ["dbm","dbuv","dbmv","v","w","dbua","dbµv","dbµa"]):
-                    self.getSend.configure(background="green")
+                    self.getSend.setBg(3)
                 else:
                     print('Got '+textAnswer.lower()+' but required dbm, dbuv, dbmv, v, w, dbua, dbµv or dbµa')
-                    self.getSend.configure(background="red")
+                    self.getSend.setBg(1)
             elif(' ' not in textAnswer.strip()):
-                self.getSend.configure(background="green")
+                self.getSend.setBg(3)
             else:
                 print('Got '+textAnswer+' but needed something')
-                self.getSend.configure(background="red")
+                self.getSend.setBg(1)
             self.test=False
     def onClickCheckBox(self):
         if(self.checkbutton[1].get()):
@@ -330,13 +329,12 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
 
             if not init:
                 self.config.master.callPrints("Lack of a init line for set the type (int, float, double, ascii) of the data returned")
-                self.getSend.configure(background="red")
+                self.getSend.setBg(1)
                 return
             for i in range(0,plot.linesmax+1):
                 self.config.master.callMessages(self.getSend.get())
             self.testPlot=plot.linesmax  
-##            print(plot.linesmax+";"+self.testPlot
-            self.getSend.configure(background="yellow")
+            self.getSend.setBg(2)
         
     def onTestButton(self):
         if(self.getSend.get() !=None and self.getSend.get()!=""):
@@ -354,10 +352,10 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
 
             if not init:
                 self.config.master.callPrints("Lack of a init line for set the type (int, float, double, ascii) of the data returned")
-                self.getSend.configure(background="red")
+                self.getSend.setBg(1)
                 return
             self.config.master.callMessages(self.getSend.get())
-            self.getSend.configure(background="yellow")
+            self.getSend.setBg(2)
     def testPlotAnswer(self,barray):
 ##        print("onTestPlotButton")
         inc =0
@@ -398,7 +396,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
 ##                maxf=max(f,maxf)
         if(self.testPlot==0):
             self.testPlot=-1
-            self.getSend.configure(background="green")
+            self.getSend.setBg(3)
             self.config.master.enableConsole(True)
             self.config.master.callPrints("The Plot is done")
             
@@ -420,15 +418,15 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
             if(self.headertag.textvar.get() == self.headertag.optionList[2]): #"#A"
                 if(str(barray[:2]) != '#A'):
                     self.config.master.callPrints("Got a header '"+utils.convertBytesToString(barray[:2])+"' but needed '#A'")
-                    self.getSend.configure(background="red")
+                    self.getSend.setBg(1)
                     return
                 numberHeaderBytes=struct.unpack('H'*2,barray[2,4])
                 self.config.master.callPrints("#A reader not implemented : "+str(numberHeaderBytes))
-                self.getSend.configure(background="red")
+                self.getSend.setBg(1)
             elif(self.headertag.textvar.get() == self.headertag.optionList[1]):#"IEEE 754"
                 if(str(barray[:1]) != "b'#'" or str(barray[1:2]) < "b'0'" or str(barray[1:2]) > "b'9'"):
                     self.config.master.callPrints("Got a header '"+utils.convertBytesToString(barray[:2])+"' but needed '#X' where X is a number")
-                    self.getSend.configure(background="red")
+                    self.getSend.setBg(1)
                     return
                 c=str(barray[1:2])[2]
 ##                    self.config.master.callPrints("Number of Points1 : "+str(c))
@@ -436,7 +434,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
                 c=barray[2:2+v].decode('ascii')
                 nbpts=int(str(c))/self.listResponseShortBytes[inc]
                 self.config.master.callPrints("Number of Points : "+str(nbpts))
-                self.getSend.configure(background="green")
+                self.getSend.setBg(3)
                 listpts= utils.readPoints(barray[2+v:],int(str(c)),inc,0)
                 maxf=float("-inf")
                 for f in listpts:
@@ -449,7 +447,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
                 
             else:
                 self.config.master.callPrints("Number of Points : "+str(c))
-                self.getSend.configure(background="red")
+                self.getSend.setBg(1)
         elif inc==5:
             listpts= utils.readPoints(barray,-1,inc,0)
             maxf=float("-inf")
@@ -457,7 +455,7 @@ class GetPointsTag(tk.Frame,utils.ListenerInterface):
                 maxf=max(f,maxf)                  
             print("Max value of all points : "+str(maxf))
             self.config.master.callPrints("Max value of all points : "+str(maxf))
-            self.getSend.configure(background="green")
+            self.getSend.setBg(3)
 
     def callAnswer(self, barray):
         #Create a plot where you call the command 99 others times if the command is good on the first.
