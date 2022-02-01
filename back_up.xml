@@ -1,102 +1,37 @@
 <Cmd-SCPI>
   <Copyright>LUXONDES</Copyright>
   <File_ver>1.0</File_ver>
-  <Date>16/02/2021</Date>
-  <Marque>R&amp;S</Marque>
-  <Mode>Spectrum</Mode>
+  <Date>18/06/2021</Date>
+  <Marque />
+  <Mode>Oscilloscope</Mode>
   <DeviceNames>
-    <Device id="ROHDE&amp;SCHWARZ_FPC1x">ROHDE &amp; SCHWARZ FPC 1xxx</Device>
-    <Device id="ROHDE&amp;SCHWARZ_FPC1500x">ROHDE &amp; SCHWARZ FPC 1500</Device>
-    <Device id="Rohde&amp;Schwarz,FSV-x">R&amp;S FSV-x</Device>
-    <Device id="Rohde&amp;Schwarz,FSV-30,1307.9002K30/101552,2.21">R&amp;S FSV-30</Device>
-    <Device id="Luxondes Simu,numero,version">Luxondes Simulation PC</Device>
-    <Device id="Rohde&amp;Schwarz,FPHx">R&amp;S FPH</Device>
-    <Device id="Rohde&amp;Schwarz,FSWx">R&amp;S FSW</Device>
+    <Device id="Rohde&amp;Schwarz,RTA4004,1335.7700k04/102733,01.600">R&amp;S RTA 4004</Device>
+    <Device id="Rohde&amp;Schwarz,RTAx">R&amp;S RTAx</Device>
   </DeviceNames>
   <Init>
-    <Line>FORM REAL,32</Line>
+    <Line>FORM REAL</Line>
+    <Line>ACQ:POIN 5000</Line>
+    <Line>FORM:BORD LSBF</Line>
   </Init>
   <Header>IEEE 754</Header>
   <Endian>LITTLE</Endian>
   <GetPoints>
     <Get>
-      <Send>:TRAC? TRACE1</Send>
+      <Send>CHAN:DATA?</Send>
       <Response>REAL:32</Response>
     </Get>
   </GetPoints>
   <AmplitudeUnit>
     <Get>
-      <Send>:UNIT:POWER?</Send>
+      <Send>prob:set:att:unit?</Send>
       <Response>Value</Response>
     </Get>
   </AmplitudeUnit>
-  <Start>
-    <Freq-Unit>Hz</Freq-Unit>
-    <Get>
-      <Send>:FREQ:STAR?</Send>
-      <Response>Value</Response>
-    </Get>
-    <Set>
-      <Send>:FREQ:STAR Value Unit</Send>
-      <Response />
-    </Set>
-  </Start>
-  <Stop>
-    <Freq-Unit>Hz</Freq-Unit>
-    <Get>
-      <Send>:FREQ:STOP?</Send>
-      <Response>Value</Response>
-    </Get>
-    <Set>
-      <Send>:FREQ:STOP Value Unit</Send>
-      <Response />
-    </Set>
-  </Stop>
-  <Center>
-    <Freq-Unit>Hz</Freq-Unit>
-    <Get>
-      <Send>:FREQ:CENTER?</Send>
-      <Response>Value</Response>
-    </Get>
-    <Set>
-      <Send>:FREQ:CENTER Value Unit</Send>
-      <Response />
-    </Set>
-  </Center>
-  <Span>
-    <Freq-Unit>Hz</Freq-Unit>
-    <Get>
-      <Send>:FREQ:SPAN?</Send>
-      <Response>Value</Response>
-    </Get>
-    <Set>
-      <Send>:FREQ:SPAN Value Unit</Send>
-      <Response />
-    </Set>
-  </Span>
-  <Rbw>
-    <Get>
-      <Send>BAND?</Send>
-      <Response>Value</Response>
-    </Get>
-  </Rbw>
-  <Vbw>
-    <Get>
-      <Send>BAND:VID?</Send>
-      <Response>Value</Response>
-    </Get>
-  </Vbw>
-  <Attenuator>
-    <Get>
-      <Send>INP:ATT?</Send>
-      <Response>Value</Response>
-    </Get>
-  </Attenuator>
-  <SweepTime>
+  <GetHeader>
     <Time-Unit>s</Time-Unit>
     <Get>
-      <Send>:SWE:TIME?</Send>
+      <Send>chan:data:head?</Send>
       <Response>Value</Response>
     </Get>
-  </SweepTime>
+  </GetHeader>
 </Cmd-SCPI>
