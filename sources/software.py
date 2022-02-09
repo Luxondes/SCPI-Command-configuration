@@ -12,7 +12,12 @@ class Windows(tk.Tk):
         self.title('Luxondes PC Test Software')
         self.geometry("800x450+300+300")
         self.resizable(False,False)
-        self.iconbitmap(utils.getPathIcon())
+
+        try:
+            self.iconbitmap(utils.getPathIcon())
+        except:
+            None
+        
         
 ##        self.style = ttk.Style(self)
 ##        self.tk.call("source", utils.getPathForest())

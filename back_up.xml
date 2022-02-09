@@ -1,37 +1,11 @@
 <Cmd-SCPI>
   <Copyright>LUXONDES</Copyright>
-  <File_ver>1.0</File_ver>
-  <Date>18/06/2021</Date>
+  <File_ver />
+  <Date />
   <Marque />
-  <Mode>Oscilloscope</Mode>
-  <DeviceNames>
-    <Device id="Rohde&amp;Schwarz,RTA4004,1335.7700k04/102733,01.600">R&amp;S RTA 4004</Device>
-    <Device id="Rohde&amp;Schwarz,RTAx">R&amp;S RTAx</Device>
-  </DeviceNames>
-  <Init>
-    <Line>FORM REAL</Line>
-    <Line>ACQ:POIN 5000</Line>
-    <Line>FORM:BORD LSBF</Line>
-  </Init>
-  <Header>IEEE 754</Header>
+  <Mode>Spectrum</Mode>
+  <DeviceNames />
+  <Init />
   <Endian>LITTLE</Endian>
-  <GetPoints>
-    <Get>
-      <Send>CHAN:DATA?</Send>
-      <Response>REAL:32</Response>
-    </Get>
-  </GetPoints>
-  <AmplitudeUnit>
-    <Get>
-      <Send>prob:set:att:unit?</Send>
-      <Response>Value</Response>
-    </Get>
-  </AmplitudeUnit>
-  <GetHeader>
-    <Time-Unit>s</Time-Unit>
-    <Get>
-      <Send>chan:data:head?</Send>
-      <Response>Value</Response>
-    </Get>
-  </GetHeader>
+  <GetPoints />
 </Cmd-SCPI>

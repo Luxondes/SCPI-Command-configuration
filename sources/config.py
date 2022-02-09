@@ -1136,7 +1136,10 @@ def openWindow(toproot,filename):
     toproot.addToListener(app)
     root.title('Config')
 ##    root.style = ttk.Style(root)
-    root.iconbitmap(utils.getPathIcon())
+    try:
+        root.iconbitmap(utils.getPathIcon())
+    except:
+        None
 ##    root.style.theme_use("forest-light")
     
     return root
